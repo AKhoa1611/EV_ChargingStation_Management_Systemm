@@ -39,6 +39,15 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Vehicle> vehicles;
 
+    public User(String fullName, String email, String password, String phone, Date dateOfBirth, String address) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.dateOfBirth = dateOfBirth;
+        this.address = address;
+    }
+
     public enum UserStatus {
         ACTIVE,
         INACTIVE,
