@@ -36,6 +36,9 @@ public class User {
     @Column(name = "status",nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Vehicle> vehicles;
+
     public enum UserStatus {
         ACTIVE,
         INACTIVE,
