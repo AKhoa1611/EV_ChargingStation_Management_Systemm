@@ -7,6 +7,6 @@ import swp391.code.swp391.Entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    public User findByEmail(String email);
-    public User findByPhone(String phone);
+    User findByEmail(String email);
+    User findByPhone(String phone);
 }
