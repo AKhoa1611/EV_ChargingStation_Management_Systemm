@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> checkLogin(@RequestBody LoginRequestDTO loginRequestDTO) { //return user if success, response status code and null if fail
-        User user = null;
+        User user;
         try{
             user = userService.checkLoginUser(loginRequestDTO);
             if (user == null) {
