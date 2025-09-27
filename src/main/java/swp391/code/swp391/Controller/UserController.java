@@ -23,7 +23,8 @@ public class UserController {
         try{
             user = userService.checkLoginUser(loginRequestDTO);
             if (user == null) {
-                return ResponseEntity.badRequest().body(null);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(null);
             }
         } catch (Exception e) {
             e.printStackTrace();
