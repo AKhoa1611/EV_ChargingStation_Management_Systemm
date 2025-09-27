@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "Transaction")
+@Table(name = "[Transaction]")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
@@ -23,6 +23,7 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(nullable = false)
     private Double amount;
 
     @Enumerated(EnumType.STRING)

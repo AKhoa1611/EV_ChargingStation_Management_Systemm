@@ -20,20 +20,20 @@ public class User {
     private Long userId;
     @Column(name = "full_name", nullable = false)
     private String fullName;
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "phone", unique = true, nullable = false)
+    @Column(name = "phone", unique = true)
     private String phone;
-    @Column(name = "date_Of_Birth", nullable = false)
+    @Column(name = "date_Of_Birth")
     private Date dateOfBirth;
     @Column(name = "role", nullable = false)
     private UserRole role = UserRole.DRIVER;
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
     @Enumerated
-    @Column(name = "status",nullable = false)
+    @Column(name = "status", nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -59,6 +59,4 @@ public class User {
         ADMIN,
         STAFF
     }
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Vehicle> vehicles;
 }

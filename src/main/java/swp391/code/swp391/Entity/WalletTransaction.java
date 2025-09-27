@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "WalletTransaction")
+@Table(name = "wallet_transaction")
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalletTransaction {
