@@ -20,7 +20,7 @@ public class User {
     private Long userId;
     @Column(name = "full_name", nullable = false)
     private String fullName;
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
@@ -28,11 +28,14 @@ public class User {
     private String phone;
     @Column(name = "date_Of_Birth")
     private Date dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role = UserRole.DRIVER;
     @Column(name = "address")
     private String address;
-    @Enumerated
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 

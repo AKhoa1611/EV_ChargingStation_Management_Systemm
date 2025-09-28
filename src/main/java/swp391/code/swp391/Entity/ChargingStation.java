@@ -23,6 +23,8 @@ public class ChargingStation {
     @Column(name = "status", nullable = false)
     private ChargingStationStatus status = ChargingStationStatus.ACTIVE;
 
+    private double latitude; //Vi tri vi do
+    private double longitude; //Vi tri kinh do
     @OneToMany(mappedBy = "station", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChargingPoint> chargingPoint;
 
