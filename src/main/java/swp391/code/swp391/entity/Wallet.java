@@ -1,4 +1,4 @@
-package swp391.code.swp391.Entity;
+package swp391.code.swp391.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,27 +9,20 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "Subscription")
+@Table(name = "Wallet")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Subscription {
+public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long subscriptionId;
+    private Long walletId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private Double balance = 0.0;
 
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
-
-    public enum Type {
-        BASIC, PLUS, PREMIUM
-    }
+    private LocalDateTime updatedAt;
 }

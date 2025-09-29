@@ -1,4 +1,4 @@
-package swp391.code.swp391.Entity;
+package swp391.code.swp391.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "WalletTransaction")
+@Table(name = "wallet_transaction")
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalletTransaction {

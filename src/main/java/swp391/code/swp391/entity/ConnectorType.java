@@ -1,4 +1,4 @@
-package swp391.code.swp391.Entity;
+package swp391.code.swp391.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

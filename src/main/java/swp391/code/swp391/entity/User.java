@@ -1,4 +1,4 @@
-package swp391.code.swp391.Entity;
+package swp391.code.swp391.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,16 +24,19 @@ public class User {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "phone", unique = true, nullable = false)
+    @Column(name = "phone", unique = true)
     private String phone;
-    @Column(name = "date_Of_Birth", nullable = false)
+    @Column(name = "date_Of_Birth")
     private Date dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role = UserRole.DRIVER;
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
-    @Enumerated
-    @Column(name = "status",nullable = false)
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -59,6 +62,4 @@ public class User {
         ADMIN,
         STAFF
     }
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Vehicle> vehicles;
 }

@@ -1,27 +1,31 @@
-package swp391.code.swp391.Entity;
+package swp391.code.swp391.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "Revenue")
+@Table(name = "PriceFactor")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Revenue {
+public class PriceFactor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long revenueId;
+    private Long priceFactorId;
 
     @ManyToOne
     @JoinColumn(name = "station_id", nullable = false)
     private ChargingStation station;
 
-    private Double amount;
+    private Double factor;
 
-    private Date period;
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
+
+    private String description;
 }
