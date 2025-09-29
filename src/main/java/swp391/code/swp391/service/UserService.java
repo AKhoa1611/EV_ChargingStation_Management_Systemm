@@ -1,10 +1,10 @@
-package swp391.code.swp391.Service;
+package swp391.code.swp391.service;
 
-import DTO.LoginRequestDTO;
-import DTO.RegisterRequestDTO;
+import swp391.code.swp391.DTO.LoginRequestDTO;
+import swp391.code.swp391.DTO.RegisterRequestDTO;
 import org.springframework.stereotype.Service;
-import swp391.code.swp391.Entity.User;
-import swp391.code.swp391.Repository.UserRepository;
+import swp391.code.swp391.entity.User;
+import swp391.code.swp391.repository.UserRepository;
 
 import java.util.regex.Pattern;
 
@@ -19,29 +19,21 @@ public class UserService {
 
     public User checkLoginUser(LoginRequestDTO loginRequestDTO) { //return user if success, null if fail
         User user = null;
-        try {
             if (!isValidEmail(loginRequestDTO.getUsername()) && !isValidVietnamPhone(loginRequestDTO.getUsername())) { //Check if username is valid email or phone
-                return null;
+                throw new IllegalArgumentException("Invalid email or phone number");
             }
             if (isValidEmail(loginRequestDTO.getUsername())) { //Check if username is email
                 user = checkLoginByEmail(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
-            } else if (isValidVietnamPhone(loginRequestDTO.getUsername())) {//Check if username is phone
+            } else {//Check if username is phone
                 user = checkLoginByPhone(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
         return user;
     }
 
     public Long registerUser(RegisterRequestDTO registerDTO) {
-        String username = registerDTO.getUsername();
-        if (!isValidEmail(username) && !isValidVietnamPhone(username)) {
-            return -1L;
-        }
-        if (checkUserExistsByEmail(username) || checkUserExistsByPhone(username)) {
-            return -1L;
+        String username = registerDTO.getEmail();
+        if (checkUserExistsByEmail(username)) {
+            throw new IllegalArgumentException("Email already exists");
         }
         User user = new User(registerDTO.getFullName(), username, registerDTO.getPassword(), null, null, null);
         try {
@@ -68,11 +60,11 @@ public class UserService {
     }
 
     public boolean isValidEmail(String email) {
-        return Pattern.matches(EMAIL_REGEX, email);
+        return Pattern.matches(EMAIL_REGEX, email) && email!=null;
     }
 
     public boolean isValidVietnamPhone(String phone) {
-        return Pattern.matches(VIETNAM_PHONE_REGEX, phone);
+        return Pattern.matches(VIETNAM_PHONE_REGEX, phone) && phone != null;
     }
 
     public Long addUser(User user) {//return userId if success, -1 if fail (Register)
