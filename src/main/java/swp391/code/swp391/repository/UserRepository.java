@@ -30,13 +30,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByPhone(String phone);
 
     // Kiểm tra email có tồn tại ở user khác không (loại trừ user hiện tại)
-    boolean existsByEmailAndIdNot(String email, Long id);
+    boolean existsByEmailAndUserIdNot(String email, Long id);
 
     // Kiểm tra phone có tồn tại ở user khác không (loại trừ user hiện tại)
-    boolean existsByPhoneAndIdNot(String phone, Long id);
+    boolean existsByPhoneAndUserIdNot(String phone, Long id);
 
 
     //join bảng để lấy thông tin vehicles của user
     @EntityGraph(attributePaths = {"vehicles"})
-    Optional<User> findWithVehiclesById(Long id);
+    Optional<User> findWithVehiclesByUserId(Long id);
 }
