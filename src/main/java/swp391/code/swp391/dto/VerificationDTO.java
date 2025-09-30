@@ -1,4 +1,4 @@
-package swp391.code.swp391.DTO;
+package swp391.code.swp391.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;

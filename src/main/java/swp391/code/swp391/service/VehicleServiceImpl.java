@@ -1,0 +1,169 @@
+package swp391.code.swp391.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import swp391.code.swp391.dto.VehicleDTO;
+import swp391.code.swp391.entity.ConnectorType;
+import swp391.code.swp391.entity.User;
+import swp391.code.swp391.entity.Vehicle;
+import swp391.code.swp391.repository.ConnectorTypeRepository;
+import swp391.code.swp391.repository.UserRepository;
+import swp391.code.swp391.repository.VehicleRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class VehicleServiceImpl implements VehicleService {
+
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
+    private final ConnectorTypeRepository connectorTypeRepository;
+
+    @Override
+    public VehicleDTO createVehicle(VehicleDTO vehicleDTO) {
+        // Kiểm tra plate number đã tồn tại
+        if (vehicleRepository.existsByPlateNumber(vehicleDTO.getPlateNumber())) {
+            throw new RuntimeException("Vehicle with plate number " + vehicleDTO.getPlateNumber() + " already exists");
+        }
+
+        Vehicle vehicle = convertToEntity(vehicleDTO);
+        Vehicle savedVehicle = vehicleRepository.save(vehicle);
+        return convertToDTO(savedVehicle);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public VehicleDTO getVehicleByPlateNumber(String plateNumber) {
+        Vehicle vehicle = vehicleRepository.findById(plateNumber)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found with plate number: " + plateNumber));
+        return convertToDTO(vehicle);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehicleDTO> getAllVehicles() {
+        return vehicleRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehicleDTO> getVehiclesByUserId(Long userId) {
+        return vehicleRepository.findByUserUserId(userId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public VehicleDTO updateVehicle(String plateNumber, VehicleDTO vehicleDTO) {
+        Vehicle existingVehicle = vehicleRepository.findById(plateNumber)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found with plate number: " + plateNumber));
+
+        // Cập nhật thông tin
+        existingVehicle.setBrand(vehicleDTO.getBrand());
+        existingVehicle.setModel(vehicleDTO.getModel());
+        existingVehicle.setCapacity(vehicleDTO.getCapacity());
+        existingVehicle.setProductYear(vehicleDTO.getProductYear());
+
+        // Cập nhật user nếu có
+        if (vehicleDTO.getUserId() != null) {
+            User user = userRepository.findById(vehicleDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + vehicleDTO.getUserId()));
+            existingVehicle.setUser(user);
+        }
+
+        // Cập nhật connector types nếu có
+        if (vehicleDTO.getConnectorTypeIds() != null && !vehicleDTO.getConnectorTypeIds().isEmpty()) {
+            List<ConnectorType> connectorTypes = connectorTypeRepository.findAllById(vehicleDTO.getConnectorTypeIds());
+            existingVehicle.setConnectorTypes(connectorTypes);
+        }
+
+        Vehicle updatedVehicle = vehicleRepository.save(existingVehicle);
+        return convertToDTO(updatedVehicle);
+    }
+
+    @Override
+    public void deleteVehicle(String plateNumber) {
+        if (!vehicleRepository.existsByPlateNumber(plateNumber)) {
+            throw new RuntimeException("Vehicle not found with plate number: " + plateNumber);
+        }
+        vehicleRepository.deleteById(plateNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehicleDTO> searchVehiclesByBrand(String brand) {
+        return vehicleRepository.findByBrandContainingIgnoreCase(brand).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehicleDTO> searchVehiclesByModel(String model) {
+        return vehicleRepository.findByModelContainingIgnoreCase(model).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehicleDTO> searchVehiclesByProductYear(int productYear) {
+        return vehicleRepository.findByProductYear(productYear).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehicleDTO> searchVehiclesByConnectorType(Long connectorTypeId) {
+        return vehicleRepository.findByConnectorTypeId(connectorTypeId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Helper methods
+    private Vehicle convertToEntity(VehicleDTO vehicleDTO) {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setPlateNumber(vehicleDTO.getPlateNumber());
+        vehicle.setBrand(vehicleDTO.getBrand());
+        vehicle.setModel(vehicleDTO.getModel());
+        vehicle.setCapacity(vehicleDTO.getCapacity());
+        vehicle.setProductYear(vehicleDTO.getProductYear());
+
+        // Set user
+        if (vehicleDTO.getUserId() != null) {
+            User user = userRepository.findById(vehicleDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + vehicleDTO.getUserId()));
+            vehicle.setUser(user);
+        }
+
+        // Set connector types
+        if (vehicleDTO.getConnectorTypeIds() != null && !vehicleDTO.getConnectorTypeIds().isEmpty()) {
+            List<ConnectorType> connectorTypes = connectorTypeRepository.findAllById(vehicleDTO.getConnectorTypeIds());
+            vehicle.setConnectorTypes(connectorTypes);
+        }
+
+        return vehicle;
+    }
+
+    private VehicleDTO convertToDTO(Vehicle vehicle) {
+        VehicleDTO dto = new VehicleDTO();
+        dto.setPlateNumber(vehicle.getPlateNumber());
+        dto.setBrand(vehicle.getBrand());
+        dto.setModel(vehicle.getModel());
+        dto.setCapacity(vehicle.getCapacity());
+        dto.setProductYear(vehicle.getProductYear());
+
+        // Cho response: set full objects
+        dto.setUser(vehicle.getUser());
+        dto.setConnectorTypes(vehicle.getConnectorTypes());
+
+        return dto;
+    }
+}

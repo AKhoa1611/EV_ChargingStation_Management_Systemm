@@ -1,4 +1,5 @@
 package swp391.code.swp391.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,8 +23,10 @@ public class ConnectorType {
     private String typeName;
 
     @ManyToMany(mappedBy = "connectorTypes")
+    @JsonBackReference(value = "vehicle-connectorType")
     private List<Vehicle> vehicles;
 
     @ManyToOne
+    @JsonBackReference(value = "chargingPoint-connectorType")
     private ChargingPoint chargingPoint;
 }

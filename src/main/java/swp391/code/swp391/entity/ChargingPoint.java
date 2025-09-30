@@ -29,6 +29,7 @@ public class ChargingPoint {
     public enum ChargingPointStatus {
         AVAILABLE,
         OCCUPIED,
-        OUT_OF_SERVICE
+        OUT_OF_SERVICE,
+        MAINTENANCE
     }
 }

@@ -1,0 +1,34 @@
+package swp391.code.swp391.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import swp391.code.swp391.entity.ChargingPoint;
+import swp391.code.swp391.entity.Vehicle;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ConnectorTypeDTO {
+
+    private Long connectorTypeId;
+
+    @NotBlank(message = "Type name is required")
+    @Size(max = 100, message = "Type name must not exceed 100 characters")
+    private String typeName;
+
+    // Cho input: chỉ cần charging point ID
+    private Long chargingPointId;
+
+    // Cho output: full ChargingPoint object
+    private ChargingPoint chargingPoint;
+
+    // Cho output: list vehicles sử dụng connector type này
+    private List<Vehicle> vehicles;
+}
