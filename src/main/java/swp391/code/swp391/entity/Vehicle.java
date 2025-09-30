@@ -1,5 +1,6 @@
 package swp391.code.swp391.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class Vehicle {
     private int productYear;
 
     @ManyToOne
+    @JsonBackReference(value = "user-vehicle")
     private User user;
 
     @ManyToMany

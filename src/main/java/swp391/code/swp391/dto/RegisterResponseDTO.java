@@ -1,4 +1,4 @@
-package swp391.code.swp391.DTO;
+package swp391.code.swp391.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

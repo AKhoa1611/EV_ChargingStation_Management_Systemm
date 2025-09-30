@@ -1,17 +1,18 @@
 package swp391.code.swp391.repository;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import swp391.code.swp391.entity.ChargingStation;
+import swp391.code.swp391.entity.ChargingStation.ChargingStationStatus;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ChargingStationRepository extends JpaRepository<ChargingStation, Long> {
+
     // Tìm charging stations theo tên (không phân biệt hoa thường)
     List<ChargingStation> findByStationNameContainingIgnoreCase(String stationName);
 
@@ -19,7 +20,7 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
     List<ChargingStation> findByAddressContainingIgnoreCase(String address);
 
     // Tìm charging stations theo status
-    List<ChargingStation> findByStatus(ChargingStation.ChargingStationStatus status);
+    List<ChargingStation> findByStatus(ChargingStationStatus status);
 
     // Tìm charging station theo tên chính xác
     Optional<ChargingStation> findByStationName(String stationName);
@@ -31,7 +32,7 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
     boolean existsByStationName(String stationName);
 
     // Đếm số lượng charging stations theo status
-    long countByStatus(ChargingStation.ChargingStationStatus status);
+    long countByStatus(ChargingStationStatus status);
 
     // Custom query: Tìm stations có charging points available
     @Query("SELECT DISTINCT cs FROM ChargingStation cs JOIN cs.chargingPoint cp WHERE cp.status = 'AVAILABLE'")
@@ -54,8 +55,8 @@ public interface ChargingStationRepository extends JpaRepository<ChargingStation
     List<ChargingStation> findStationsByConnectorType(@Param("connectorTypeId") Long connectorTypeId);
 
     // Custom query: Tìm stations theo địa chỉ và status
-    List<ChargingStation> findByAddressContainingIgnoreCaseAndStatus(String address, ChargingStation.ChargingStationStatus status);
+    List<ChargingStation> findByAddressContainingIgnoreCaseAndStatus(String address, ChargingStationStatus status);
 
     // Custom query: Tìm stations theo tên và status
-    List<ChargingStation> findByStationNameContainingIgnoreCaseAndStatus(String stationName, ChargingStation.ChargingStationStatus status);
+    List<ChargingStation> findByStationNameContainingIgnoreCaseAndStatus(String stationName, ChargingStationStatus status);
 }

@@ -1,61 +1,60 @@
 package swp391.code.swp391.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import swp391.code.swp391.entity.ChargingStation;
-import swp391.code.swp391.repository.ChargingStationRepository;
+import swp391.code.swp391.dto.ChargingStationDTO;
+import swp391.code.swp391.entity.ChargingStation.ChargingStationStatus;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-public class ChargingStationService {
+public interface ChargingStationService {
 
-    private final ChargingStationRepository chargingStationRepository;
+    // Tạo charging station mới
+    ChargingStationDTO createChargingStation(ChargingStationDTO chargingStationDTO);
 
-    // Lấy tất cả trạm sạc
-    public List<ChargingStation> getAllChargingStations() {
-        return chargingStationRepository.findAll();
-    }
+    // Lấy charging station theo ID
+    ChargingStationDTO getChargingStationById(Long stationId);
 
-    // Lấy trạm sạc theo ID
-    public Optional<ChargingStation> getChargingStationById(Long id) {
-        return chargingStationRepository.findById(id);
-    }
+    // Lấy tất cả charging stations
+    List<ChargingStationDTO> getAllChargingStations();
 
-    // Tạo trạm sạc mới
-    public ChargingStation createChargingStation(String stationName, String address) {
-        ChargingStation station = new ChargingStation();
-        station.setStationName(stationName);
-        station.setAddress(address);
-        station.setStatus(ChargingStation.ChargingStationStatus.ACTIVE);
-        return chargingStationRepository.save(station);
-    }
+    // Cập nhật charging station
+    ChargingStationDTO updateChargingStation(Long stationId, ChargingStationDTO chargingStationDTO);
 
-    // Cập nhật thông tin trạm sạc
-    public ChargingStation updateChargingStation(Long id, String stationName, String address, ChargingStation.ChargingStationStatus status) {
-        ChargingStation station = chargingStationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Station not found with id: " + id));
+    // Xóa charging station
+    void deleteChargingStation(Long stationId);
 
-        station.setStationName(stationName);
-        station.setAddress(address);
-        station.setStatus(status);
-        return chargingStationRepository.save(station);
-    }
+    // Tìm kiếm charging stations theo tên
+    List<ChargingStationDTO> searchChargingStationsByName(String stationName);
 
-    // Xóa trạm sạc
-    public void deleteChargingStation(Long id) {
-        chargingStationRepository.deleteById(id);
-    }
+    // Tìm kiếm charging stations theo địa chỉ
+    List<ChargingStationDTO> searchChargingStationsByAddress(String address);
 
-    // Tìm kiếm theo tên
-    public List<ChargingStation> searchByName(String name) {
-        return chargingStationRepository.findByStationNameContainingIgnoreCase(name);
-    }
+    // Lấy charging stations theo status
+    List<ChargingStationDTO> getChargingStationsByStatus(ChargingStationStatus status);
 
-    // Lấy danh sách theo trạng thái
-    public List<ChargingStation> getChargingStationsByStatus(ChargingStation.ChargingStationStatus status) {
-        return chargingStationRepository.findByStatus(status);
-    }
+    // Cập nhật status của charging station
+    ChargingStationDTO updateChargingStationStatus(Long stationId, ChargingStationStatus status);
+
+    // Lấy stations có available charging points
+    List<ChargingStationDTO> getStationsWithAvailableChargingPoints();
+
+    // Lấy stations theo số lượng charging points tối thiểu
+    List<ChargingStationDTO> getStationsWithMinimumChargingPoints(int minPoints);
+
+    // Lấy stations không có charging points
+    List<ChargingStationDTO> getStationsWithoutChargingPoints();
+
+    // Lấy stations theo connector type
+    List<ChargingStationDTO> getStationsByConnectorType(Long connectorTypeId);
+
+    // Tìm kiếm stations theo địa chỉ và status
+    List<ChargingStationDTO> searchStationsByAddressAndStatus(String address, ChargingStationStatus status);
+
+    // Tìm kiếm stations theo tên và status
+    List<ChargingStationDTO> searchStationsByNameAndStatus(String stationName, ChargingStationStatus status);
+
+    // Đếm stations theo status
+    long countStationsByStatus(ChargingStationStatus status);
+
+    // Kiểm tra tên station đã tồn tại
+    boolean isStationNameExists(String stationName);
 }
