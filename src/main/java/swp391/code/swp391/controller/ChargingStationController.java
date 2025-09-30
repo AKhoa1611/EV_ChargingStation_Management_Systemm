@@ -12,6 +12,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/charging-stations")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ChargingStationController {
 
     private final ChargingStationService chargingStationService;
@@ -79,4 +80,6 @@ public class ChargingStationController {
         List<ChargingStation> stations = chargingStationService.getChargingStationsByStatus(status);
         return ResponseEntity.ok(stations);
     }
+
+
 }
