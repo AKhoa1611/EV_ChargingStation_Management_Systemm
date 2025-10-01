@@ -22,6 +22,8 @@ public class ChargingPointDTO {
 
     @NotNull(message = "Status is required")
     private ChargingPointStatus status;
+    private double kwh;
+    private Long connectorTypeId;
 
     // Cho input: chỉ cần station ID
     private Long stationId;

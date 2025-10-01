@@ -26,6 +26,13 @@ public class ChargingPoint {
     @Column(name = "status", nullable = false)
     private ChargingPointStatus status = ChargingPointStatus.AVAILABLE;
 
+    @ManyToOne
+    @JoinColumn(name = "connector_type_id")
+    private ConnectorType connectorType;
+
+    @Column(name = "kwh")
+    private Double kwh;
+
     public enum ChargingPointStatus {
         AVAILABLE,
         OCCUPIED,
