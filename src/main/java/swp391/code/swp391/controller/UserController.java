@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import swp391.code.swp391.entity.User;
-import swp391.code.swp391.entity.Vehicle;
 import swp391.code.swp391.service.UserServiceImpl;
 import swp391.code.swp391.dto.APIResponse;
 import swp391.code.swp391.dto.UpdateUserDTO;
@@ -38,7 +37,6 @@ public class UserController {
         } catch(IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new APIResponse<>(false, e.getMessage(), null));
         } catch(Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new APIResponse<>(false, e.getMessage(), null));
         }
         return ResponseEntity.ok(new APIResponse<>(true, "Login successful", user));
@@ -64,7 +62,7 @@ public class UserController {
 
     /**
      * 1. XEM THÔNG TIN USER
-     * GET /api/users/profile/{id}
+     * GET /api/user/profile/{id}
      */
     @GetMapping("/profile/{id}")
     public ResponseEntity<APIResponse<User>> viewUserProfile(@PathVariable Long id) {
@@ -87,7 +85,7 @@ public class UserController {
 
     /**
      * 2. CẬP NHẬT THÔNG TIN (cần xác nhận)
-     * PUT /api/users/profile/{id}
+     * PUT /api/user/profile/{id}
      */
     @PutMapping("/profile/{id}")
     public ResponseEntity<APIResponse<User>> updateUserProfile(
@@ -216,7 +214,7 @@ public class UserController {
 
     /**
      * 4. XÓA USER
-     * DELETE /api/users/{id}
+     * DELETE /api/user/{id}
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<String>> deleteUser(@PathVariable Long id) {
@@ -236,14 +234,14 @@ public class UserController {
 
     /**
      * 5. BAN USER
-     * PUT /api/users/{id}/ban
+     * PUT /api/user/{id}/ban
      */
     @PutMapping("/{id}/ban")
     public ResponseEntity<APIResponse<User>> banUser(@PathVariable Long id) {
         try {
             User updatedUser = userServiceImpl.banUser(id);
             return ResponseEntity.ok(
-                    APIResponse.success("User đã bị ban thành công", null)
+                    APIResponse.success("User đã bị ban thành công", updatedUser)
             );
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

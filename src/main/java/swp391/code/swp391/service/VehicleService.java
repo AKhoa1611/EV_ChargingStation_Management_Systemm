@@ -22,7 +22,7 @@ public interface VehicleService {
     VehicleDTO updateVehicle(String plateNumber, VehicleDTO vehicleDTO);
 
     // Xóa vehicle
-    void deleteVehicle(String plateNumber);
+    //void deleteVehicle(String plateNumber);
 
     // Tìm kiếm vehicle theo brand
     List<VehicleDTO> searchVehiclesByBrand(String brand);
@@ -35,4 +35,7 @@ public interface VehicleService {
 
     // Tìm kiếm vehicle theo connector type
     List<VehicleDTO> searchVehiclesByConnectorType(Long connectorTypeId);
+
+    // Xóa vehicle với user validation
+    void deleteVehicleByUser(String plateNumber, Long userId);
 }

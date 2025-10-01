@@ -1,7 +1,6 @@
 package swp391.code.swp391.service;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import swp391.code.swp391.dto.LoginRequestDTO;
@@ -9,12 +8,9 @@ import swp391.code.swp391.dto.RegisterRequestDTO;
 import org.springframework.stereotype.Service;
 import swp391.code.swp391.dto.UpdateUserDTO;
 import swp391.code.swp391.entity.User;
-import swp391.code.swp391.entity.Vehicle;
 import swp391.code.swp391.repository.UserRepository;
-import swp391.code.swp391.repository.VehicleRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -32,15 +28,13 @@ public class UserServiceImpl implements UserService {
     private static final String VIETNAM_PHONE_REGEX = "^(0|\\+84)(3|5|7|8|9)[0-9]{8}$";
 
     // Dependencies
-    @Autowired
+
     private PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
     // Lưu trữ mã xác thực tạm thời (trong thực tế nên dùng Redis)
     private final Map<String, VerificationData> verificationCodes = new ConcurrentHashMap<>();
-    @Autowired
-    private VehicleRepository vehicleRepository;
 
 
     /**
@@ -326,7 +320,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
 
         // Kiểm tra số điện thoại hợp lệ
-        if (newPhone == null || !isValidPhoneNumber(newPhone)) {
+        if ( isValidPhoneNumber(newPhone)) {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
 
@@ -406,13 +400,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-
+    public void deleteUser(Long userId) {
+            User user = getUserById(userId);
+            userRepository.delete(user);
     }
 
     @Override
     public User banUser(Long id) {
-        return null;
+            User user =  getUserById(id);
+            user.setStatus(User.UserStatus.BANNED);
+            return userRepository.save(user);
     }
 
     // =============== HELPER METHODS ===============
@@ -425,13 +422,6 @@ public class UserServiceImpl implements UserService {
         return String.format("%06d", random.nextInt(1000000));
     }
 
-//    /**
-//     * Kiểm tra email hợp lệ
-//     */
-//    private boolean isValidEmail(String email) {
-//        return email != null &&
-//                email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-//    }
 
     /**
      * Kiểm tra số điện thoại hợp lệ (Việt Nam)

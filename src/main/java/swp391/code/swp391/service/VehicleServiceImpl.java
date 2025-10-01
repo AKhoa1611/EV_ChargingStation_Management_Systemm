@@ -88,9 +88,13 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void deleteVehicle(String plateNumber) {
-        if (!vehicleRepository.existsByPlateNumber(plateNumber)) {
-            throw new RuntimeException("Vehicle not found with plate number: " + plateNumber);
+    public void deleteVehicleByUser(String plateNumber, Long userId) {
+        Vehicle vehicle = vehicleRepository.findById(plateNumber)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found with plate number: " + plateNumber));
+
+        // Kiểm tra vehicle có thuộc về user không
+        if (vehicle.getUser() == null || !vehicle.getUser().getUserId().equals(userId)) {
+            throw new RuntimeException("You don't have permission to delete this vehicle");
         }
         vehicleRepository.deleteById(plateNumber);
     }
@@ -161,7 +165,7 @@ public class VehicleServiceImpl implements VehicleService {
         dto.setProductYear(vehicle.getProductYear());
 
         // Cho response: set full objects
-        dto.setUser(vehicle.getUser());
+        //dto.setUser(vehicle.getUser());
         dto.setConnectorTypes(vehicle.getConnectorTypes());
 
         return dto;
