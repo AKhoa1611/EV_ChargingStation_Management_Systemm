@@ -67,10 +67,10 @@ public class VehicleController {
     }
 
     // Xóa vehicle
-    @DeleteMapping("/{plateNumber}")
-    public ResponseEntity<?> deleteVehicle(@PathVariable String plateNumber) {
+    @DeleteMapping("/user/{userId}/vehicle/{plateNumber}")
+    public ResponseEntity<?> deleteVehicleByUser(@PathVariable Long userId, @PathVariable String plateNumber) {
         try {
-            vehicleService.deleteVehicle(plateNumber);
+            vehicleService.deleteVehicleByUser(plateNumber, userId);
             return new ResponseEntity<>("Vehicle deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
