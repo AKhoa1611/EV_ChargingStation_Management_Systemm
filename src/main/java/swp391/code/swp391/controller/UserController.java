@@ -15,7 +15,7 @@ import swp391.code.swp391.service.VehicleServiceImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/auth/user")
 public class UserController {
     @Autowired
     private final UserServiceImpl userServiceImpl;
