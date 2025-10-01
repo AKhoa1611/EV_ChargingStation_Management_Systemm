@@ -15,16 +15,16 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;
 
-    @ManyToOne
+    @ManyToOne //Liên kết với bảng Session
     @JoinColumn(name = "session_id", nullable = false)
     private Session session;
 
-    @ManyToOne
+    @ManyToOne //Liên kết với bảng User
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
-    private Double amount;
+    private Double amount; //Giá tiền cuối cùng của Giao dịch
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

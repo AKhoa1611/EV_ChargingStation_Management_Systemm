@@ -8,7 +8,7 @@ import swp391.code.swp391.entity.User;
 import swp391.code.swp391.service.UserServiceImpl;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/auth/user")
 public class UserController {
 
     private final UserServiceImpl userServiceImpl;

@@ -28,7 +28,7 @@ public class Session {
     private Date endTime;
 
     @Column(nullable = false)
-    private Double kwh;
+    private Double powerConsumed; //Số kwh đã sạc
 
     @Column(nullable = false)
     private Double cost;

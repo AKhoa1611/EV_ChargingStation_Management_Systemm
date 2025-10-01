@@ -1,5 +1,6 @@
 package swp391.code.swp391.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import swp391.code.swp391.DTO.LoginRequestDTO;
 import swp391.code.swp391.DTO.RegisterRequestDTO;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
      * Constructor injection for dependencies
      * Initializes BCryptPasswordEncoder for password hashing
      */
+    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
