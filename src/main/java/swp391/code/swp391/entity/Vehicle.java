@@ -34,7 +34,7 @@ public class Vehicle {
     @ManyToMany
     @JoinTable(
         name = "vehicle_connector_types",
-        joinColumns = @JoinColumn(name = "plateNumber"),
+        joinColumns = @JoinColumn(name = "plate_number"),
         inverseJoinColumns = @JoinColumn(name = "connector_type_id")
     )
     private List<ConnectorType> connectorTypes;

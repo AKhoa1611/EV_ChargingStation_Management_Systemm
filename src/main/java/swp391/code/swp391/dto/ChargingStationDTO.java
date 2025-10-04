@@ -32,6 +32,15 @@ public class ChargingStationDTO {
     @NotNull(message = "Status is required")
     private ChargingStationStatus status;
 
+    private double latitude;
+    private double longitude;
+
+    @NotNull(message = "At least one charging point is required")
+    private List<ChargingPointDTO> chargingPoints;
+
+    @NotNull(message = "Number of charging points is required")
+    private int chargingPointNumber;
+
     // Cho output: list charging points
     private List<ChargingPoint> chargingPoint;
 }

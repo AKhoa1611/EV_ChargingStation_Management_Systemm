@@ -30,8 +30,8 @@ public class SecurityConfig {
 //            .cors(cors -> cors.disable())
             .authorizeHttpRequests(auth ->auth
                 .requestMatchers("/api/auth/**").permitAll()
-//                    .requestMatchers(HttpMethod.GET, "/api/charging-points/**").permitAll()
-//                    .requestMatchers(HttpMethod.POST, "/api/charging-points/**").permitAll()
+                    .requestMatchers("/api/charging-stations/**").permitAll()
+                    .requestMatchers("/api/charging-points/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session ->

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import swp391.code.swp391.dto.ChargingPointDTO;
 import swp391.code.swp391.dto.ChargingStationDTO;
 import swp391.code.swp391.entity.ChargingStation.ChargingStationStatus;
 import swp391.code.swp391.service.ChargingStationService;
@@ -23,21 +24,22 @@ public class ChargingStationController {
     @PostMapping
     public ResponseEntity<?> createChargingStation(@RequestBody @Validated ChargingStationDTO chargingStationDTO) {
         try {
+            // Additional validation for charging points
+            if (chargingStationDTO.getChargingPoints() == null || chargingStationDTO.getChargingPoints().isEmpty()) {
+                return new ResponseEntity<>("At least one charging point is required", HttpStatus.BAD_REQUEST);
+            }
+
+            // Additional validation for connector types
+            for (ChargingPointDTO chargingPoint : chargingStationDTO.getChargingPoints()) {
+                if (chargingPoint.getConnectorTypeId() == null) {
+                    return new ResponseEntity<>("Connector type is required for each charging point", HttpStatus.BAD_REQUEST);
+                }
+            }
+
             ChargingStationDTO createdStation = chargingStationService.createChargingStation(chargingStationDTO);
             return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // Lấy charging station theo ID
-    @GetMapping("/{stationId}")
-    public ResponseEntity<?> getChargingStationById(@PathVariable Long stationId) {
-        try {
-            ChargingStationDTO chargingStation = chargingStationService.getChargingStationById(stationId);
-            return new ResponseEntity<>(chargingStation, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

@@ -30,21 +30,34 @@ public class ChargingPointServiceImpl implements ChargingPointService {
         if (chargingPointRepository.existsByChargingPointId(chargingPointDTO.getChargingPointId())) {
             throw new RuntimeException("Charging point with ID " + chargingPointDTO.getChargingPointId() + " already exists");
         }
+        // Validate station exists
+        ChargingStation station = chargingStationRepository.findById(chargingPointDTO.getStationId())
+                .orElseThrow(() -> new RuntimeException("Charging station not found with id: " + chargingPointDTO.getStationId()));
 
+        // Validate and get connector type
+        ConnectorType connectorType = connectorTypeRepository.findById(chargingPointDTO.getConnectorTypeId())
+                .orElseThrow(() -> new RuntimeException("Connector type not found with id: " + chargingPointDTO.getConnectorTypeId()));
+
+        // Create charging point entity
         ChargingPoint chargingPoint = convertToEntity(chargingPointDTO);
+        chargingPoint.setStation(station);
+        chargingPoint.setConnectorType(connectorType);
 
-        // Set connector type
-        if (chargingPointDTO.getConnectorTypeId() != null) {
-            ConnectorType connectorType = connectorTypeRepository.findById(chargingPointDTO.getConnectorTypeId())
-                    .orElseThrow(() -> new RuntimeException("Connector type not found"));
-            chargingPoint.setConnectorType(connectorType);
+        // Set default status if not provided
+        if (chargingPoint.getStatus() == null) {
+            chargingPoint.setStatus(ChargingPointStatus.AVAILABLE);
         }
 
-        // Set kWh
-        chargingPoint.setKwh(chargingPointDTO.getKwh());
-
+        // Save charging point
         ChargingPoint savedChargingPoint = chargingPointRepository.save(chargingPoint);
-        return convertToDTO(savedChargingPoint);
+
+        // Convert to DTO with connector type information
+        ChargingPointDTO resultDTO = convertToDTO(savedChargingPoint);
+        resultDTO.setConnectorTypeName(connectorType.getTypeName());
+        resultDTO.setPowerOutput(connectorType.getPowerOutput());
+        resultDTO.setPricePerKwh(connectorType.getPricePerKwh());
+
+        return resultDTO;
     }
 
     @Override

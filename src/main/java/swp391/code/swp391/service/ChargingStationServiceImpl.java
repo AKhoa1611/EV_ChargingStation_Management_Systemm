@@ -3,11 +3,14 @@ package swp391.code.swp391.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import swp391.code.swp391.dto.ChargingPointDTO;
 import swp391.code.swp391.dto.ChargingStationDTO;
 import swp391.code.swp391.entity.ChargingStation;
 import swp391.code.swp391.entity.ChargingStation.ChargingStationStatus;
 import swp391.code.swp391.repository.ChargingStationRepository;
+import swp391.code.swp391.repository.ConnectorTypeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +20,32 @@ import java.util.stream.Collectors;
 public class ChargingStationServiceImpl implements ChargingStationService {
 
     private final ChargingStationRepository chargingStationRepository;
+    private final ChargingPointService chargingPointService;
+    private final ConnectorTypeRepository connectorTypeRepository;
 
     @Override
     public ChargingStationDTO createChargingStation(ChargingStationDTO chargingStationDTO) {
+        // Xác thực đầu vào
+        if (chargingStationDTO.getChargingPoints() == null || chargingStationDTO.getChargingPoints().isEmpty()) {
+            throw new RuntimeException("At least one charging point is required");
+        }
+
+        // Xác thực số trụ sạc khớp với số trụ sạc thực tế
+        if (chargingStationDTO.getChargingPointNumber() != chargingStationDTO.getChargingPoints().size()) {
+            throw new RuntimeException("Charging point number must match the number of charging points provided");
+        }
+
+        // Xác nhận mỗi trụ sạc có một loại connector type
+        for (ChargingPointDTO chargingPoint : chargingStationDTO.getChargingPoints()) {
+            if (chargingPoint.getConnectorTypeId() == null) {
+                throw new RuntimeException("Connector type is required for each charging point");
+            }
+            // Xác thực connector type có tồn tại
+            if (!connectorTypeRepository.existsById(chargingPoint.getConnectorTypeId())) {
+                throw new RuntimeException("Invalid connector type ID: " + chargingPoint.getConnectorTypeId());
+            }
+        }
+
         // Kiểm tra station ID đã tồn tại
         if (chargingStationRepository.existsByStationId(chargingStationDTO.getStationId())) {
             throw new RuntimeException("Charging station with ID " + chargingStationDTO.getStationId() + " already exists");
@@ -32,7 +58,20 @@ public class ChargingStationServiceImpl implements ChargingStationService {
 
         ChargingStation chargingStation = convertToEntity(chargingStationDTO);
         ChargingStation savedChargingStation = chargingStationRepository.save(chargingStation);
-        return convertToDTO(savedChargingStation);
+
+        // Tạo trụ sạc
+        List<ChargingPointDTO> savedChargingPoints = new ArrayList<>();
+        for (ChargingPointDTO chargingPointDTO : chargingStationDTO.getChargingPoints()) {
+            // Set station reference
+            chargingPointDTO.setStationId(savedChargingStation.getStationId());
+            // Create charging point
+            ChargingPointDTO savedChargingPoint = chargingPointService.createChargingPoint(chargingPointDTO);
+            savedChargingPoints.add(savedChargingPoint);
+        }
+
+        ChargingStationDTO resultDTO = convertToDTO(savedChargingStation);
+        resultDTO.setChargingPoints(savedChargingPoints);
+        return resultDTO;
     }
 
     @Override
@@ -76,11 +115,7 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         ChargingStation chargingStation = chargingStationRepository.findById(stationId)
                 .orElseThrow(() -> new RuntimeException("Charging station not found with id: " + stationId));
 
-        // Kiểm tra có charging points không
-        if (chargingStation.getChargingPoint() != null && !chargingStation.getChargingPoint().isEmpty()) {
-            throw new RuntimeException("Cannot delete charging station. It has " +
-                    chargingStation.getChargingPoint().size() + " charging point(s) associated");
-        }
+
 
         chargingStationRepository.deleteById(stationId);
     }

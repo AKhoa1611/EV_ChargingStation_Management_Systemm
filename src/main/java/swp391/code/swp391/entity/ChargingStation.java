@@ -25,7 +25,7 @@ public class ChargingStation {
 
     private double latitude; //Vi tri vi do
     private double longitude; //Vi tri kinh do
-    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ChargingPoint> chargingPoint;
 
     public enum ChargingStationStatus {
@@ -33,6 +33,6 @@ public class ChargingStation {
         INACTIVE,
         MAINTENANCE
     }
-    @Column(name = "chargingPointNumber", nullable = false)
+    @Column(name = "charging_point_number", nullable = false)
     private int chargingPointNumber;
 }
