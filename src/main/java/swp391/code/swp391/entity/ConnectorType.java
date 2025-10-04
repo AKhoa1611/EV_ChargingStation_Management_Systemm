@@ -19,8 +19,14 @@ public class ConnectorType {
     @Column(name = "connector_type_id")
     private Long connectorTypeId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "type_name", nullable = false)
     private String typeName;
+
+    @Column(name = "power_output")
+    private Double powerOutput;
+
+    @Column(name = "price_per_kwh")
+    private Double pricePerKwh;
 
     @ManyToMany(mappedBy = "connectorTypes")
     @JsonBackReference(value = "vehicle-connectorType")
