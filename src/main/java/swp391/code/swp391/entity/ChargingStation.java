@@ -1,5 +1,6 @@
 package swp391.code.swp391.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ChargingStation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "new_station_id")
     private Long stationId;
     @Column(name = "station_name", nullable = false)
     private String stationName;
@@ -26,6 +29,7 @@ public class ChargingStation {
     private double latitude; //Vi tri vi do
     private double longitude; //Vi tri kinh do
     @OneToMany(mappedBy = "station", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<ChargingPoint> chargingPoint;
 
     public enum ChargingStationStatus {

@@ -30,13 +30,14 @@ public class ChargingPointServiceImpl implements ChargingPointService {
         if (chargingPointRepository.existsByChargingPointId(chargingPointDTO.getChargingPointId())) {
             throw new RuntimeException("Charging point with ID " + chargingPointDTO.getChargingPointId() + " already exists");
         }
+
         // Validate station exists
         ChargingStation station = chargingStationRepository.findById(chargingPointDTO.getStationId())
                 .orElseThrow(() -> new RuntimeException("Charging station not found with id: " + chargingPointDTO.getStationId()));
 
-        // Validate and get connector type
-        ConnectorType connectorType = connectorTypeRepository.findById(chargingPointDTO.getConnectorTypeId())
-                .orElseThrow(() -> new RuntimeException("Connector type not found with id: " + chargingPointDTO.getConnectorTypeId()));
+        // Validate and get connector type by name
+        ConnectorType connectorType = connectorTypeRepository.findByTypeName(chargingPointDTO.getTypeName())
+                .orElseThrow(() -> new RuntimeException("Connector type not found with name: " + chargingPointDTO.getTypeName()));
 
         // Create charging point entity
         ChargingPoint chargingPoint = convertToEntity(chargingPointDTO);
@@ -53,7 +54,7 @@ public class ChargingPointServiceImpl implements ChargingPointService {
 
         // Convert to DTO with connector type information
         ChargingPointDTO resultDTO = convertToDTO(savedChargingPoint);
-        resultDTO.setConnectorTypeName(connectorType.getTypeName());
+        resultDTO.setTypeName(connectorType.getTypeName());
         resultDTO.setPowerOutput(connectorType.getPowerOutput());
         resultDTO.setPricePerKwh(connectorType.getPricePerKwh());
 
@@ -92,15 +93,12 @@ public class ChargingPointServiceImpl implements ChargingPointService {
         // Cập nhật status
         existingChargingPoint.setStatus(chargingPointDTO.getStatus());
 
-        // Update connector type
-        if (chargingPointDTO.getConnectorTypeId() != null) {
-            ConnectorType connectorType = connectorTypeRepository.findById(chargingPointDTO.getConnectorTypeId())
-                    .orElseThrow(() -> new RuntimeException("Connector type not found"));
+        // Update connector type by name
+        if (chargingPointDTO.getTypeName() != null) {
+            ConnectorType connectorType = connectorTypeRepository.findByTypeName(chargingPointDTO.getTypeName())
+                    .orElseThrow(() -> new RuntimeException("Connector type not found with name: " + chargingPointDTO.getTypeName()));
             existingChargingPoint.setConnectorType(connectorType);
         }
-
-        // Update kWh
-        existingChargingPoint.setKwh(chargingPointDTO.getKwh());
 
         // Cập nhật station nếu có
         if (chargingPointDTO.getStationId() != null) {
@@ -203,13 +201,10 @@ public class ChargingPointServiceImpl implements ChargingPointService {
             chargingPoint.setStation(station);
         }
 
-        // Map kWh
-        chargingPoint.setKwh(chargingPointDTO.getKwh());
-
-        // Map connectorType nếu có
-        if (chargingPointDTO.getConnectorTypeId() != null) {
-            ConnectorType connectorType = connectorTypeRepository.findById(chargingPointDTO.getConnectorTypeId())
-                    .orElseThrow(() -> new RuntimeException("Connector type not found"));
+        // Tìm connector type theo tên
+        if (chargingPointDTO.getTypeName() != null) {
+            ConnectorType connectorType = connectorTypeRepository.findByTypeName(chargingPointDTO.getTypeName())
+                    .orElseThrow(() -> new RuntimeException("Connector type not found with name: " + chargingPointDTO.getTypeName()));
             chargingPoint.setConnectorType(connectorType);
         }
 

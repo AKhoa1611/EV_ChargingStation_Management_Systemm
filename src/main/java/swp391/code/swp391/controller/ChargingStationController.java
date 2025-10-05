@@ -24,15 +24,22 @@ public class ChargingStationController {
     @PostMapping
     public ResponseEntity<?> createChargingStation(@RequestBody @Validated ChargingStationDTO chargingStationDTO) {
         try {
-            // Additional validation for charging points
+            // Validate số lượng charging points
             if (chargingStationDTO.getChargingPoints() == null || chargingStationDTO.getChargingPoints().isEmpty()) {
                 return new ResponseEntity<>("At least one charging point is required", HttpStatus.BAD_REQUEST);
             }
 
-            // Additional validation for connector types
+            // Validate số lượng charging points khớp với chargingPointNumber
+            if (chargingStationDTO.getChargingPointNumber() != chargingStationDTO.getChargingPoints().size()) {
+                return new ResponseEntity<>("Charging point number must match the number of charging points provided",
+                        HttpStatus.BAD_REQUEST);
+            }
+
+            // Validate connector type name
             for (ChargingPointDTO chargingPoint : chargingStationDTO.getChargingPoints()) {
-                if (chargingPoint.getConnectorTypeId() == null) {
-                    return new ResponseEntity<>("Connector type is required for each charging point", HttpStatus.BAD_REQUEST);
+                if (chargingPoint.getTypeName() == null || chargingPoint.getTypeName().trim().isEmpty()) {
+                    return new ResponseEntity<>("Connector type name is required for each charging point",
+                            HttpStatus.BAD_REQUEST);
                 }
             }
 

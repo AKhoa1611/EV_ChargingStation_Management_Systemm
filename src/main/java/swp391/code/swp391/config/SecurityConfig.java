@@ -33,7 +33,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/charging-stations/**").permitAll()
                     .requestMatchers("/api/charging-points/**").permitAll()
                     .requestMatchers("/api/connector-types/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) //Không dùng session vì đang dùng JWT

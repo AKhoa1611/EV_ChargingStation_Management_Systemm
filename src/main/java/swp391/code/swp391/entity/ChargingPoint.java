@@ -1,5 +1,6 @@
 package swp391.code.swp391.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 public class ChargingPoint {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "charging_point_id")
     private Long chargingPointId;
 
     @ManyToOne
+    @JsonBackReference
     private ChargingStation station;
 
     @OneToMany(mappedBy = "chargingPoint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -30,8 +34,6 @@ public class ChargingPoint {
     @JoinColumn(name = "connector_type_id")
     private ConnectorType connectorType;
 
-    @Column(name = "kwh")
-    private Double kwh;
 
     public enum ChargingPointStatus {
         AVAILABLE,

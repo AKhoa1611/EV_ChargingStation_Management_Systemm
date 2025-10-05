@@ -37,12 +37,12 @@ public class ChargingStationServiceImpl implements ChargingStationService {
 
         // Xác nhận mỗi trụ sạc có một loại connector type
         for (ChargingPointDTO chargingPoint : chargingStationDTO.getChargingPoints()) {
-            if (chargingPoint.getConnectorTypeId() == null) {
-                throw new RuntimeException("Connector type is required for each charging point");
+            if (chargingPoint.getTypeName() == null || chargingPoint.getTypeName().isEmpty()) {
+                throw new RuntimeException("Connector type name is required for each charging point");
             }
             // Xác thực connector type có tồn tại
-            if (!connectorTypeRepository.existsById(chargingPoint.getConnectorTypeId())) {
-                throw new RuntimeException("Invalid connector type ID: " + chargingPoint.getConnectorTypeId());
+            if (!connectorTypeRepository.existsByTypeName(chargingPoint.getTypeName())) {
+                throw new RuntimeException("Invalid connector type name: " + chargingPoint.getTypeName());
             }
         }
 
@@ -56,15 +56,17 @@ public class ChargingStationServiceImpl implements ChargingStationService {
             throw new RuntimeException("Charging station with name '" + chargingStationDTO.getStationName() + "' already exists");
         }
 
+        // Tạo mới charging station
         ChargingStation chargingStation = convertToEntity(chargingStationDTO);
+        chargingStation.setLatitude(chargingStationDTO.getLatitude());  // Thêm dòng này
+        chargingStation.setLongitude(chargingStationDTO.getLongitude()); // Thêm dòng này
         ChargingStation savedChargingStation = chargingStationRepository.save(chargingStation);
+
 
         // Tạo trụ sạc
         List<ChargingPointDTO> savedChargingPoints = new ArrayList<>();
         for (ChargingPointDTO chargingPointDTO : chargingStationDTO.getChargingPoints()) {
-            // Set station reference
             chargingPointDTO.setStationId(savedChargingStation.getStationId());
-            // Create charging point
             ChargingPointDTO savedChargingPoint = chargingPointService.createChargingPoint(chargingPointDTO);
             savedChargingPoints.add(savedChargingPoint);
         }
@@ -223,6 +225,10 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         chargingStation.setStatus(chargingStationDTO.getStatus() != null ?
                 chargingStationDTO.getStatus() : ChargingStationStatus.ACTIVE);
 
+        // Thêm latitude và longitude
+        chargingStation.setLatitude(chargingStationDTO.getLatitude());
+        chargingStation.setLongitude(chargingStationDTO.getLongitude());
+
         return chargingStation;
     }
 
@@ -233,8 +239,9 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         dto.setAddress(chargingStation.getAddress());
         dto.setStatus(chargingStation.getStatus());
 
-        // Cho response: set full charging points list
-        dto.setChargingPoint(chargingStation.getChargingPoint());
+        // Thêm latitude và longitude
+        dto.setLatitude(chargingStation.getLatitude());
+        dto.setLongitude(chargingStation.getLongitude());
 
         return dto;
     }

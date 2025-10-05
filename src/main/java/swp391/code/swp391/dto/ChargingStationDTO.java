@@ -18,7 +18,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChargingStationDTO {
 
-    @NotNull(message = "Station ID is required")
+    //@NotNull(message = "Station ID is required")
     private Long stationId;
 
     @NotBlank(message = "Station name is required")
@@ -32,8 +32,8 @@ public class ChargingStationDTO {
     @NotNull(message = "Status is required")
     private ChargingStationStatus status;
 
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     @NotNull(message = "At least one charging point is required")
     private List<ChargingPointDTO> chargingPoints;
