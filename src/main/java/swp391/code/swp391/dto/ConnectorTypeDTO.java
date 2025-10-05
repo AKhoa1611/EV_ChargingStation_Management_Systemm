@@ -2,6 +2,7 @@ package swp391.code.swp391.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,12 @@ public class ConnectorTypeDTO {
     @NotBlank(message = "Type name is required")
     @Size(max = 100, message = "Type name must not exceed 100 characters")
     private String typeName;
+
+    @NotNull(message = "Power output is required")
+    private Double powerOutput;
+
+    @NotNull(message = "Price per kWh is required")
+    private Double pricePerKwh;
 
     // Cho input: chỉ cần charging point ID
     private Long chargingPointId;

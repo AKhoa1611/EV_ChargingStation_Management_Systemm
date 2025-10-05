@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/charging-stations/**").permitAll()
                     .requestMatchers("/api/charging-points/**").permitAll()
+                    .requestMatchers("/api/connector-types/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session ->

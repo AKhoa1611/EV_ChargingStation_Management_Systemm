@@ -69,6 +69,8 @@ public class ConnectorTypeServiceImpl implements ConnectorTypeService {
 
         // Cập nhật thông tin
         existingConnectorType.setTypeName(connectorTypeDTO.getTypeName());
+        existingConnectorType.setPowerOutput(connectorTypeDTO.getPowerOutput());
+        existingConnectorType.setPricePerKwh(connectorTypeDTO.getPricePerKwh());
 
         // Cập nhật charging point nếu có
         if (connectorTypeDTO.getChargingPointId() != null) {
@@ -132,6 +134,8 @@ public class ConnectorTypeServiceImpl implements ConnectorTypeService {
         ConnectorType connectorType = new ConnectorType();
         connectorType.setConnectorTypeId(connectorTypeDTO.getConnectorTypeId());
         connectorType.setTypeName(connectorTypeDTO.getTypeName());
+        connectorType.setPowerOutput(connectorTypeDTO.getPowerOutput());
+        connectorType.setPricePerKwh(connectorTypeDTO.getPricePerKwh());
 
         // Set charging point
         if (connectorTypeDTO.getChargingPointId() != null) {
@@ -147,6 +151,8 @@ public class ConnectorTypeServiceImpl implements ConnectorTypeService {
         ConnectorTypeDTO dto = new ConnectorTypeDTO();
         dto.setConnectorTypeId(connectorType.getConnectorTypeId());
         dto.setTypeName(connectorType.getTypeName());
+        dto.setPowerOutput(connectorType.getPowerOutput());
+        dto.setPricePerKwh(connectorType.getPricePerKwh());
 
         // Cho response: set full objects
         dto.setChargingPoint(connectorType.getChargingPoint());
