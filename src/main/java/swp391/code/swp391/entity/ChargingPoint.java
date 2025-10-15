@@ -34,6 +34,11 @@ public class ChargingPoint {
     @JoinColumn(name = "connector_type_id")
     private ConnectorType connectorType;
 
+    @Column(name = "power_output")
+    private Double powerOutput;
+
+    @Column(name = "price_per_kwh")
+    private Double pricePerKwh;
 
     public enum ChargingPointStatus {
         AVAILABLE,
